@@ -9,6 +9,8 @@ permissions:
 
 jobs:
   whoami:
+    environment:
+      name: "whoami"
     runs-on: ubuntu-latest
 
     steps:
