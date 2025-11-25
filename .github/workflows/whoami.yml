@@ -21,13 +21,5 @@ jobs:
           role-to-assume: arn:aws:iam::036676154772:role/gh-policy
           aws-region: eu-central-1
 
-
-      - name: Print OIDC sub
-        run: |
-          echo "Fetching OIDC token..."
-          TOKEN=$(curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
-          echo "Decoded token:"
-          echo $TOKEN
-
       - name: Whoami
         run: aws sts get-caller-identity
