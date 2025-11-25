@@ -16,6 +16,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
+      - name: Print OIDC sub
+        run: |
+          echo "Fetching OIDC token..."
+          TOKEN=$(curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
+          echo "Decoded token:"
+          echo $TOKEN | jq -r '.'
+        
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
