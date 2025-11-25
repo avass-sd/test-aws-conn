@@ -20,7 +20,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::923498177713:role/sd-org-role-chain-access-iam-role
-          aws-region: us-weast-1
+          aws-region: eu-central-1
 
       - name: Whoami
         run: aws sts get-caller-identity
