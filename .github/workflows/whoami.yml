@@ -10,8 +10,8 @@ permissions:
 jobs:
   whoami:
     runs-on: ubuntu-latest
-    environment:
-      name: "whoami"
+    #environment:
+    #  name: "whoami"
     steps:
       - uses: actions/checkout@v4
 
