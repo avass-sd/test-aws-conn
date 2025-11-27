@@ -1,4 +1,4 @@
-name: AWS WhoAmI
+name: AWS Deployment
 
 on:
   workflow_dispatch:
@@ -10,16 +10,36 @@ permissions:
 jobs:
   whoami:
     runs-on: ubuntu-latest
-
+    environment:
+      name: "aws-rolechain"
     steps:
       - uses: actions/checkout@v4
 
+      - name: Show OIDC claims (right before assume)
+        env:
+          AUDIENCE: "sts.amazonaws.com"
+        run: |
+          TOKEN_JSON=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE")
+          ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r .value)
+          echo "$ID_TOKEN" | awk -F. '{print $2}' | base64 -d 2>/dev/null | jq -r
 
-      - name: Configure AWS credentials
+      - name: Configure role-chain AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::036676154772:role/gh-policy
-          aws-region: eu-central-1
+          aws-region: us-east-2
+          role-session-name: MySessionName
+
+
+      - name: Configure deployer AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          aws-region: us-east-2
+          role-to-assume: arn:aws:iam::036676154772:role/gh2
+          role-session-name: MySessionName
+          role-chaining: true
 
       - name: Whoami
         run: aws sts get-caller-identity
+
+y
