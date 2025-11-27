@@ -32,7 +32,7 @@ jobs:
 
 
       - name: Configure deployer AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::036676154772:role/gh2
