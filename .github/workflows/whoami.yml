@@ -28,7 +28,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::036676154772:role/gh-policy
           aws-region: us-east-2
-          role-session-name: MySessionName
+
 
 
       - name: Configure deployer AWS Credentials
@@ -36,7 +36,6 @@ jobs:
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::036676154772:role/gh2
-          role-session-name: MySessionName
           role-chaining: true
 
       - name: Whoami
