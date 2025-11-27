@@ -11,7 +11,7 @@ jobs:
   whoami:
     runs-on: ubuntu-latest
     environment:
-      name: "aws-rolechain"
+      name: "whoami"
     steps:
       - uses: actions/checkout@v4
 
