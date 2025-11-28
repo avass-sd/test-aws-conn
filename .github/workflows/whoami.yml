@@ -93,3 +93,12 @@ jobs:
 
           chmod +x "$TMP_PATH/tf-summarize"
           sudo mv "$TMP_PATH/tf-summarize" /usr/local/bin/tf-summarize
+
+          
+          ######################################
+          # Version check (OpenTofu, Terragrunt, tf-summarize)
+          ######################################
+          echo "--- Installed versions ---"
+          echo -n "tofu: " && tofu version
+          echo -n "terragrunt: " && terragrunt --version
+          echo -n "tf-summarize: " && tf-summarize --version || true
