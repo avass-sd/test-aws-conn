@@ -5,7 +5,7 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflows/reusable/setup.yaml
+    uses: ./.github/workflows/setup.yaml
     with:
       tofu_version: "1.9.1"
       terragrunt_version: "0.80.4"
