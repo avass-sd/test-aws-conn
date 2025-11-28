@@ -1,0 +1,84 @@
+name: AWS Tools Setup
+
+on:
+  workflow_call:
+    inputs:
+      tofu_version:
+        required: true
+        type: string
+      terragrunt_version:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+      role_policy:
+        required: true
+        type: string
+      role_deployer:
+        required: true
+        type: string
+
+    secrets:
+      aws_access: # optionally, but OIDC won't need these
+        required: false
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    env:
+      TMP_PATH: "${{ github.workspace }}/.tmp"
+      TF_IN_AUTOMATION: "true"
+      TF_INPUT: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure org role-chain AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.role_policy }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Configure deployer AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.region }}
+          role-to-assume: ${{ inputs.role_deployer }}
+          role-chaining: true
+
+      - name: Whoami
+        run: aws sts get-caller-identity
+
+      - name: Prepare environment (install tools)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq unzip curl
+
+          mkdir -p "$TMP_PATH"
+
+          ##############################
+          # OpenTofu
+          ##############################
+          curl -L -o "$TMP_PATH/tofu.zip" \
+            "https://github.com/opentofu/opentofu/releases/download/v${{ inputs.tofu_version }}/tofu_${{ inputs.tofu_version }}_linux_amd64.zip"
+
+          unzip -o "$TMP_PATH/tofu.zip" -d "$TMP_PATH/tofu_dist"
+          sudo mv "$TMP_PATH/tofu_dist/tofu" /usr/local/bin/tofu
+
+          ##############################
+          # Terragrunt
+          ##############################
+          curl -L -o "$TMP_PATH/terragrunt" \
+            "https://github.com/gruntwork-io/terragrunt/releases/download/v${{ inputs.terragrunt_version }}/terragrunt_linux_amd64"
+
+          chmod +x "$TMP_PATH/terragrunt"
+          sudo mv "$TMP_PATH/terragrunt" /usr/local/bin/terragrunt
+
+          ##############################
+          # Version check
+          ##############################
+          echo "--- Installed versions ---"
+          echo -n "tofu: " && tofu version
+          echo -n "terragrunt: " && terragrunt --version
