@@ -1,92 +1,15 @@
-name: AWS Deployment
+name: Test AWS Deployment
 
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  TOFU_VERSION: "1.9.1"
-  TERRAGRUNT_VERSION: "0.80.4"
-  TMP_PATH: "${{ github.workspace }}/.tmp"
-  TF_IN_AUTOMATION: "true"
-  TF_INPUT: "false"
-
-
-
 jobs:
-  whoami:
-    runs-on: ubuntu-latest
-    environment:
-      name: "whoami"
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Show OIDC claims (right before assume)
-        env:
-            AUDIENCE: "sts.amazonaws.com"
-        run: |
-          TOKEN_JSON=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE")
-          ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r .value)
-          echo "$ID_TOKEN" | awk -F. '{print $2}' | base64 -d 2>/dev/null | jq -r
-
-      - name: Configure role-chain AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::036676154772:role/gh-policy
-          aws-region: us-east-2
-
-
-
-      - name: Configure deployer AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: us-east-2
-          role-to-assume: arn:aws:iam::036676154772:role/gh2
-          role-chaining: true
-
-      - name: Whoami
-        run: aws sts get-caller-identity
-
-
-      - name: Prepare environment (install tools)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq unzip curl
-
-          # create tmp folder inside repository
-          mkdir -p "$TMP_PATH"
-
-          ##############################
-          # OpenTofu
-          ##############################
-
-          curl -L -o "$TMP_PATH/tofu.zip" \
-            "https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_linux_amd64.zip"
-
-          # extract into tmp folder WITHOUT touching repo files
-          unzip -o "$TMP_PATH/tofu.zip" -d "$TMP_PATH/tofu_dist"
-
-          sudo mv "$TMP_PATH/tofu_dist/tofu" /usr/local/bin/tofu
-
-
-          ##############################
-          # Terragrunt
-          ##############################
-
-          curl -L -o "$TMP_PATH/terragrunt" \
-            "https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64"
-
-          chmod +x "$TMP_PATH/terragrunt"
-          sudo mv "$TMP_PATH/terragrunt" /usr/local/bin/terragrunt
-
-          
-          ######################################
-          # Version check (OpenTofu, Terragrunt, tf-summarize)
-          ######################################
-          echo "--- Installed versions ---"
-          echo -n "tofu: " && tofu version
-          echo -n "terragrunt: " && terragrunt --version
+  setup:
+    uses: ./.github/workflows/aws-tools-setup.yml
+    with:
+      tofu_version: "1.9.1"
+      terragrunt_version: "0.80.4"
+      region: "us-east-2"
+      role_policy: "arn:aws:iam::036676154772:role/gh-policy"
+      role_deployer: "arn:aws:iam::036676154772:role/gh2"
 
