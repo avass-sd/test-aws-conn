@@ -7,6 +7,16 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  TOFU_VERSION: "1.9.1"
+  TERRAGRUNT_VERSION: "0.80.4"
+  TMP_PATH: "${{ github.workspace }}/.tmp"
+  TFSUMMARIZE_VERSION: "latest"
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+
+
 jobs:
   whoami:
     runs-on: ubuntu-latest
