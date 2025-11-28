@@ -3,6 +3,12 @@ name: Test AWS Deployment
 on:
   workflow_dispatch:
 
+  
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+
 jobs:
   setup:
     uses: ./.github/workflows/setup.yaml
