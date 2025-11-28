@@ -19,9 +19,7 @@ on:
         required: true
         type: string
 
-    secrets:
-      aws_access: # optionally, but OIDC won't need these
-        required: false
+
 
 jobs:
   setup:
