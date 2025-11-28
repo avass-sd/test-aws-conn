@@ -83,17 +83,6 @@ jobs:
           chmod +x "$TMP_PATH/terragrunt"
           sudo mv "$TMP_PATH/terragrunt" /usr/local/bin/terragrunt
 
-
-          ##############################
-          # tf-summarize
-          ##############################
-
-          curl -L -o "$TMP_PATH/tf-summarize" \
-            "https://github.com/dineshba/tf-summarize/releases/${TFSUMMARIZE_VERSION}/download/tf-summarize-linux-amd64"
-
-          chmod +x "$TMP_PATH/tf-summarize"
-          sudo mv "$TMP_PATH/tf-summarize" /usr/local/bin/tf-summarize
-
           
           ######################################
           # Version check (OpenTofu, Terragrunt, tf-summarize)
@@ -101,4 +90,4 @@ jobs:
           echo "--- Installed versions ---"
           echo -n "tofu: " && tofu version
           echo -n "terragrunt: " && terragrunt --version
-          echo -n "tf-summarize: " && tf-summarize --version || true
+
