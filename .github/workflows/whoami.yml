@@ -2,7 +2,11 @@ name: Test AWS Deployment
 
 on:
   workflow_dispatch:
-
+  push:
+    paths:
+      - 'environments/*/*.hcl'
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
   
 permissions:
   id-token: write
