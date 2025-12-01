@@ -18,6 +18,9 @@ on:
       role_deployer:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -26,6 +29,8 @@ permissions:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
 
     env:
       TMP_PATH: "${{ github.workspace }}/.tmp"
