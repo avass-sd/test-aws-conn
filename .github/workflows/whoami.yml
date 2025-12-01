@@ -15,8 +15,13 @@ permissions:
 
 jobs:
   setup:
+
     uses: ./.github/workflows/setup.yaml
+    
+
+      
     with:
+      environment: "whoami"
       tofu_version: "1.9.1"
       terragrunt_version: "0.80.4"
       region: "us-east-2"
