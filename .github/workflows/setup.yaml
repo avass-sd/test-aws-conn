@@ -32,8 +32,6 @@ jobs:
       TF_IN_AUTOMATION: "true"
       TF_INPUT: "false"
 
-    environment:
-      name: "whoami"
 
     steps:
       - uses: actions/checkout@v4
