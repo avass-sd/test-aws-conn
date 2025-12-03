@@ -7,24 +7,28 @@ on:
       - 'environments/*/*.hcl'
       - '.github/workflows/*.yml'
       - '.github/workflows/*.yaml'
-  
+
 permissions:
   id-token: write
   contents: read
   actions: read
 
+# GLOBAL VARIABLES via YAML anchor
+env: &global_env
+  ENVIRONMENT: "whoami"
+  TOFU_VERSION: "1.9.1"
+  TERRAGRUNT_VERSION: "0.80.4"
+  REGION: "us-east-2"
+  ROLE_POLICY: "arn:aws:iam::036676154772:role/gh-policy"
+  ROLE_DEPLOYER: "arn:aws:iam::036676154772:role/gh2"
+
 jobs:
   setup:
-
     uses: ./.github/workflows/setup.yaml
-    
-
-      
     with:
-      environment: "whoami"
-      tofu_version: "1.9.1"
-      terragrunt_version: "0.80.4"
-      region: "us-east-2"
-      role_policy: "arn:aws:iam::036676154772:role/gh-policy"
-      role_deployer: "arn:aws:iam::036676154772:role/gh2"
-
+      environment: ${{ env.ENVIRONMENT }}
+      tofu_version: ${{ env.TOFU_VERSION }}
+      terragrunt_version: ${{ env.TERRAGRUNT_VERSION }}
+      region: ${{ env.REGION }}
+      role_policy: ${{ env.ROLE_POLICY }}
+      role_deployer: ${{ env.ROLE_DEPLOYER }}
